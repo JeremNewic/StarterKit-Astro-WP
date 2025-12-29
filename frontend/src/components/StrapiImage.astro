@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  class?: string;
+}
+
+const { src, alt, width, height, class: className } = Astro.props;
+
+// Fonction pour nettoyer l'URL de l'image Strapi
+const getImageUrl = (url: string) => {
+  if (!url) return '';
+  // Les images Strapi peuvent être des URLs complètes ou relatives
+  // Si c'est une URL relative, on ajoute l'URL de base Strapi
+  if (url.startsWith('http')) {
+    return url;
+  }
+  const baseUrl = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
+  return `${baseUrl}${url}`;
+};
+---
+
+<Image
+  src={getImageUrl(src)}
+  alt={alt}
+  width={width}
+  height={height}
+  class={className}
+  loading="lazy"
+  format="webp"
+/>
+

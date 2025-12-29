@@ -1,0 +1,39 @@
+---
+interface Props {
+  title: string;
+  excerpt: string;
+  featuredImage?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  slug: string;
+  date: string;
+  readingTime?: string;
+}
+
+const { title, excerpt, featuredImage, imageWidth = 800, imageHeight = 600, slug, date, readingTime } = Astro.props;
+---
+
+<article class="bg-white rounded-lg shadow-md overflow-hidden">
+  {featuredImage ? (
+    <img
+      src={featuredImage}
+      alt={title}
+      width={imageWidth}
+      height={imageHeight}
+      class="w-full h-48 object-cover"
+      loading="lazy"
+    />
+  ) : null}
+  <div class="p-6">
+    <h2 class="text-xl font-bold mb-2">
+      <a href={`/blog/${slug}`} class="text-gray-900 hover:text-blue-600">
+        {title}
+      </a>
+    </h2>
+    <div class="text-gray-600 mb-4">
+      {date}
+      {readingTime ? ` • ${readingTime}` : null}
+    </div>
+    <div class="text-gray-600 prose-sm" set:html={excerpt} />
+  </div>
+</article>

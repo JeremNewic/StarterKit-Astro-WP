@@ -1,0 +1,66 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import { getAllPosts, getPostBySlug } from '../../data/strapi';
+import { transformStrapiPost } from '../../shared/transformStrapiPost';
+import type { TransformedPost } from '../../shared/types';
+
+export async function getStaticPaths() {
+  let rawPosts = [];
+  try {
+    rawPosts = await getAllPosts(); // Récupère tous les articles bruts
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Erreur inconnue';
+    console.error('Erreur lors de la récupération des articles depuis Strapi:', message);
+    // Retourne un tableau vide si Strapi n'est pas disponible
+    return [];
+  }
+  
+  const posts: TransformedPost[] = rawPosts.map(transformStrapiPost).filter((post): post is TransformedPost => post !== null);
+  return posts.map(post => ({
+    params: { slug: post.slug }, // Définit les slugs pour les routes dynamiques
+  }));
+}
+
+const { slug } = Astro.params; // Récupère le slug depuis l'URL
+
+let rawPost = null;
+try {
+  rawPost = await getPostBySlug(slug); // Récupère l'article brut correspondant au slug
+} catch (error) {
+  const message = error instanceof Error ? error.message : 'Erreur inconnue';
+  throw new Error(`Impossible de récupérer l'article : ${message}`);
+}
+
+if (!rawPost) {
+  throw new Error(`Article non trouvé pour le slug : ${slug}`);
+}
+
+const transformedPost = transformStrapiPost(rawPost);
+if (!transformedPost) {
+  throw new Error(`Erreur lors de la transformation de l'article : ${slug}`);
+}
+
+// Type assertion nécessaire car transformStrapiPost retourne Object | null
+const post = transformedPost as TransformedPost;
+---
+
+<Layout 
+  title={post.title} 
+  description={post.excerpt}
+  image={post.featuredImage}
+  article={true}
+  publishedTime={post.date}
+>
+  <article class="container mx-auto px-4 py-16">
+    <h1 class="text-4xl font-bold mb-4">{post.title}</h1>
+    <div class="text-gray-600 mb-4">{post.date}</div>
+    {post.featuredImage ? (
+      <img
+        src={post.featuredImage}
+        alt={post.title}
+        class="w-full h-auto mb-8"
+      />
+    ) : null}
+    <div class="prose" set:html={post.content}></div>
+  </article>
+</Layout>

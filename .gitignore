@@ -1,35 +1,93 @@
-# build output
-dist/
-.astro/
+# ============================================
+# Monorepo - Fichiers communs
+# ============================================
 
-# dependencies
-node_modules/
-
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# environment variables
-.env
-.env.production
-.env.local
-
-# macOS-specific files
+# OS
 .DS_Store
-
-# IDE
-.vscode/
-.idea/
+Thumbs.db
 *.swp
 *.swo
 *~
 
-# misc
-.cache/
-.temp/
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# backlog files
-BACKLOG.md
+# ============================================
+# Frontend (Astro)
+# ============================================
+
+# build output
+frontend/dist/
+frontend/.astro/
+
+# dependencies
+frontend/node_modules/
+
+# logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# environment variables
+frontend/.env
+frontend/.env.production
+frontend/.env.local
+
+# cache
+frontend/.cache/
+frontend/.temp/
+
+# ============================================
+# Backend (Strapi)
+# ============================================
+
+# dependencies
+backend/node_modules/
+
+# build
+backend/dist/
+backend/build/
+backend/.strapi/
+
+# logs
+backend/*.log
+backend/.tmp/
+
+# database
+backend/*.sql
+backend/*.sqlite
+backend/*.sqlite3
+
+# Strapi specific
+backend/.strapi-updater.json
+backend/.strapi-cloud.json
+backend/license.txt
+backend/exports
+
+# uploads (garder la structure mais pas les fichiers)
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
+
+# TypeScript
+backend/.tsbuildinfo
+backend/.eslintcache
+
+# ============================================
+# Fichiers à ignorer partout
+# ============================================
+
+# Environment variables (racine)
+.env
+.env.local
+.env.production
+
+# Documentation temporaire (garder les README)
+*.txt
+!backend/README.md
+!frontend/README.md
+!backend/strapiDoc.txt
+
